@@ -1,124 +1,89 @@
 <template>
-  <div class="min-h-screen bg-pink-50">
+  <section class="space-y-8">
+    <header>
+      <h1 class="text-3xl md:text-4xl font-black text-pink-600">Dashboard inicial</h1>
+      <p class="text-pink-400 font-semibold mt-2">Vista general de productos y accesos rápidos del sistema.</p>
+    </header>
 
-    <!-- NAVBAR -->
-    <nav class="bg-white shadow-md border-b border-pink-200">
-      <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        
-        <h1 class="text-lg font-extrabold text-pink-600 tracking-tight italic">
-          Admin Dashboard
-        </h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+      <article class="card">
+        <p class="label">Productos</p>
+        <p class="value">{{ store.totalProducts }}</p>
+      </article>
 
-        <div class="flex gap-6 text-xs font-black uppercase tracking-widest">
-          <button
-            @click="navigateTo('/home')"
-            :class="currentPath === '/home'
-              ? 'text-pink-600 border-b-2 border-pink-600 pb-1'
-              : 'text-pink-300 hover:text-pink-500 transition-colors duration-300'"
-          >
-            Home
-          </button>
+      <article class="card">
+        <p class="label">Stock total</p>
+        <p class="value">{{ store.totalStock }}</p>
+      </article>
 
-          <button
-            @click="navigateTo('/products')"
-            :class="currentPath === '/products'
-              ? 'text-pink-600 border-b-2 border-pink-600 pb-1'
-              : 'text-pink-300 hover:text-pink-500 transition-colors duration-300'"
-          >
-            Inventario
-          </button>
-        </div>
-      </div>
-    </nav>
+      <article class="card">
+        <p class="label">Productos activos</p>
+        <p class="value">{{ store.activeProducts }}</p>
+      </article>
 
-    <!-- CONTENIDO -->
-    <div class="max-w-7xl mx-auto px-6 py-10">
-
-      <!-- HOME -->
-      <div v-if="currentPath === '/home'" class="space-y-12">
-
-        <!-- Header -->
-        <header class="text-center max-w-3xl mx-auto">
-          <h2 class="text-4xl font-extrabold text-pink-600 tracking-tight italic">
-            Bienvenido al Panel de Gestión
-          </h2>
-          <p class="mt-4 text-lg text-pink-400 font-semibold">
-            Administra tu inventario y visualiza tus métricas en tiempo real.
-          </p>
-        </header>
-
-        <!-- Cards de métricas -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-
-          <!-- Total Productos -->
-          <div
-            class="bg-white rounded-3xl shadow-lg border border-pink-100 p-6
-                   hover:shadow-pink-300 transition-shadow duration-300"
-          >
-            <p class="text-xs uppercase font-black text-pink-300 tracking-widest">
-              Total Productos
-            </p>
-            <h3 class="mt-3 text-4xl font-extrabold text-pink-600">
-              {{ totalProducts }}
-            </h3>
-          </div>
-
-          <!-- Stock Disponible -->
-          <div
-            class="bg-white rounded-3xl shadow-lg border border-pink-100 p-6
-                   hover:shadow-green-300 transition-shadow duration-300"
-          >
-            <p class="text-xs uppercase font-black text-pink-300 tracking-widest">
-              Stock Disponible
-            </p>
-            <h3 class="mt-3 text-4xl font-extrabold text-emerald-600">
-              {{ totalStock }}
-            </h3>
-          </div>
-
-          <!-- Productos Activos -->
-          <div
-            class="bg-white rounded-3xl shadow-lg border border-pink-100 p-6
-                   hover:shadow-indigo-300 transition-shadow duration-300"
-          >
-            <p class="text-xs uppercase font-black text-pink-300 tracking-widest">
-              Productos Activos
-            </p>
-            <h3 class="mt-3 text-4xl font-extrabold text-indigo-600">
-              {{ activeProducts }}
-            </h3>
-          </div>
-
-          <!-- Ingresos -->
-          <div
-            class="bg-white rounded-3xl shadow-lg border border-pink-100 p-6
-                   hover:shadow-pink-400 transition-shadow duration-300"
-          >
-            <p class="text-xs uppercase font-black text-pink-300 tracking-widest">
-              Ingresos
-            </p>
-            <h3 class="mt-3 text-4xl font-extrabold text-pink-600">
-              ${{ totalRevenue }}
-            </h3>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- INVENTARIO -->
-      <div v-if="currentPath === '/products'" class="space-y-6">
-        <h2 class="text-3xl font-extrabold text-pink-600 italic">
-          Gestión de Inventario
-        </h2>
-
-        <p class="text-pink-400 font-semibold">
-          Aquí puedes administrar tus productos disponibles.
-        </p>
-
-        <!-- Aquí iría tu vista de productos -->
-      </div>
-
+      <article class="card">
+        <p class="label">Valor estimado</p>
+        <p class="value">${{ store.totalRevenue }}</p>
+      </article>
     </div>
-  </div>
+
+    <div class="bg-white rounded-2xl border border-pink-100 p-6">
+      <h2 class="text-xl font-black text-pink-600">Accesos rápidos</h2>
+      <div class="mt-4 flex flex-wrap gap-3">
+        <router-link class="btn" to="/products">Ir a productos</router-link>
+        <router-link class="btn" to="/products/create">Crear producto</router-link>
+        <router-link class="btn" to="/categories">Ver categorías</router-link>
+      </div>
+    </div>
+  </section>
 </template>
+
+<script setup>
+import { onMounted } from 'vue';
+import { useProductStore } from '../stores/productStore';
+
+const store = useProductStore();
+
+onMounted(() => {
+  store.fetchProducts();
+});
+</script>
+
+<style scoped>
+.card {
+  background: white;
+  border: 1px solid #fbcfe8;
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+
+.label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: #db2777;
+  font-weight: 700;
+}
+
+.value {
+  margin-top: 0.5rem;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.btn {
+  padding: 0.65rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #f9a8d4;
+  color: #be185d;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn:hover {
+  background: #fdf2f8;
+}
+</style>
